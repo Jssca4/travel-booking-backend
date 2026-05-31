@@ -7,33 +7,26 @@ import { UpdateDestinationDto } from './dto/update-destination.dto';
 export class DestinationService {
   constructor(private prisma: PrismaService) {}
 
-async create(dto: CreateDestinationDto) {
-  return this.prisma.destination.create({
-    data: {
-      title: dto.title,
-      description: dto.description,
-      price: dto.price,
-      quota: dto.quota,
-      duration: dto.duration,
-      type: dto.type,
-    },
-  });
-}
+  async create(dto: CreateDestinationDto) {
+    return this.prisma.destination.create({
+      data: dto,
+    });
+  }
 
   async findAll() {
     return this.prisma.destination.findMany();
   }
 
   async findOne(id: number) {
-    const destination = await this.prisma.destination.findUnique({
+    const data = await this.prisma.destination.findUnique({
       where: { id },
     });
 
-    if (!destination) {
+    if (!data) {
       throw new NotFoundException('Destination tidak ditemukan');
     }
 
-    return destination;
+    return data;
   }
 
   async update(id: number, dto: UpdateDestinationDto) {
@@ -42,12 +35,12 @@ async create(dto: CreateDestinationDto) {
     return this.prisma.destination.update({
       where: { id },
       data: {
-        title: dto.title,
-        description: dto.description,
-        price: dto.price,
-        quota: dto.quota,
-        duration: dto.duration,
-        type: dto.type,
+        ...(dto.title !== undefined && { title: dto.title }),
+        ...(dto.description !== undefined && { description: dto.description }),
+        ...(dto.price !== undefined && { price: dto.price }),
+        ...(dto.quota !== undefined && { quota: dto.quota }),
+        ...(dto.duration !== undefined && { duration: dto.duration }),
+        ...(dto.type !== undefined && { type: dto.type }),
       },
     });
   }

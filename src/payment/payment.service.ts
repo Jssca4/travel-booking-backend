@@ -48,7 +48,6 @@ export class PaymentService {
         bookingId: dto.bookingId,
         amount: dto.amount,
         paymentMethod: dto.paymentMethod,
-        paymentProof: dto.paymentProof,
         status: 'PENDING',
       },
     });
@@ -62,23 +61,6 @@ export class PaymentService {
         booking: {
           include: {
             user: true,
-            destination: true,
-          },
-        },
-      },
-    });
-  }
-
-  async getMyPayments(userId: number) {
-    return this.prisma.payment.findMany({
-      where: {
-        booking: {
-          userId,
-        },
-      },
-      include: {
-        booking: {
-          include: {
             destination: true,
           },
         },

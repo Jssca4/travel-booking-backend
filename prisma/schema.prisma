@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -74,7 +73,6 @@ model Payment {
   bookingId     Int           @unique
   amount        Int
   paymentMethod String
-  paymentProof  String
   status        PaymentStatus @default(PENDING)
   booking       Booking       @relation(fields: [bookingId], references: [id])
   createdAt     DateTime      @default(now())

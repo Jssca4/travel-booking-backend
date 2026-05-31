@@ -1,10 +1,4 @@
-import { DestinationType } from '@prisma/client';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateDestinationDto } from './create-destination.dto';
 
-export class UpdateDestinationDto {
-  title?: string;
-  description?: string;
-  price?: number;
-  quota?: number;
-  duration?: string;
-  type?: DestinationType;
-}
+export class UpdateDestinationDto extends PartialType(CreateDestinationDto) {}

@@ -2,11 +2,12 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Delete,
-  Param,
   Patch,
+  Delete,
+  Body,
+  Param,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { DestinationService } from './destination.service';
@@ -22,17 +23,18 @@ import { RolesGuard } from '../auth/common/guards/roles.guard';
 export class DestinationController {
   constructor(private readonly destinationService: DestinationService) {}
 
-  // GET ALL (PUBLIC)
+  // PUBLIC
   @Get()
   findAll() {
     return this.destinationService.findAll();
   }
-  @Get(':id')
-findOne(@Param('id') id: string) {
-  return this.destinationService.findOne(+id);
-}
 
-  // CREATE (ADMIN ONLY)
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.destinationService.findOne(id);
+  }
+
+  // ADMIN ONLY
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
@@ -40,19 +42,20 @@ findOne(@Param('id') id: string) {
     return this.destinationService.create(dto);
   }
 
-  // UPDATE (ADMIN ONLY)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateDestinationDto) {
-    return this.destinationService.update(+id, dto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateDestinationDto,
+  ) {
+    return this.destinationService.update(id, dto);
   }
 
-  // DELETE (ADMIN ONLY)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.destinationService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.destinationService.remove(id);
   }
 }
